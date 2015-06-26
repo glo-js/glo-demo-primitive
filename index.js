@@ -9,6 +9,7 @@ var assign = require('object-assign')
 var injectDefines = require('glsl-inject-defines')
 var defined = require('defined')
 var material = require('./shader')
+var toWireframe = require('gl-wireframe')
 
 module.exports = function meshViewer (primitive, opt) {
   opt = opt || {}
@@ -17,7 +18,9 @@ module.exports = function meshViewer (primitive, opt) {
   var color = defined(opt.color, [ 1, 1, 1, 1 ])
   var gl = createContext('webgl2') || createContext('webgl')
   var canvas = document.body.appendChild(gl.canvas)
-  
+    
+  var wireframe = opt.wireframe
+
   var useTexture = opt.texture !== false
   var shaderDefines = {}
   if (useTexture) {
@@ -39,7 +42,7 @@ module.exports = function meshViewer (primitive, opt) {
     .attribute('position', primitive.positions)
     .attribute('uv', primitive.uvs)
     .attribute('normal', primitive.normals)
-    .elements(primitive.cells)
+    .elements(wireframe ? toWireframe(primitive.cells) : primitive.cells)
 
   var time = 0
   var tex
@@ -89,7 +92,7 @@ module.exports = function meshViewer (primitive, opt) {
       tex.bind()
     }
     mesh.bind(shader)
-    mesh.draw(gl.TRIANGLES)
+    mesh.draw(wireframe ? gl.LINES : gl.TRIANGLES)
     mesh.unbind(shader)
   }
 }
