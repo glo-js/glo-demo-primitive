@@ -1,0 +1,57 @@
+{
+  "name": "glo-quick-mesh-view",
+  "version": "1.0.0",
+  "description": "a quick mesh viewer using glo modules",
+  "main": "index.js",
+  "license": "MIT",
+  "author": {
+    "name": "Matt DesLauriers",
+    "email": "dave.des@gmail.com",
+    "url": "https://github.com/mattdesl"
+  },
+  "dependencies": {
+    "canvas-loop": "^1.0.4",
+    "defined": "^1.0.0",
+    "get-canvas-context": "^1.0.1",
+    "gl-mat4": "^1.1.4",
+    "gl-wireframe": "^1.0.1",
+    "glo-mesh": "^1.0.0",
+    "glo-shader": "^1.0.2",
+    "glo-texture": "^1.0.1",
+    "glsl-inject-defines": "^1.0.2",
+    "glslify": "^2.2.1",
+    "img": "^1.0.0",
+    "object-assign": "^3.0.0",
+    "perspective-camera": "^1.0.1"
+  },
+  "devDependencies": {
+    "budo": "^4.1.0",
+    "garnish": "^2.1.3",
+    "torus-mesh": "^1.0.0"
+  },
+  "scripts": {
+    "test": "node test.js",
+    "start": "budo demo.js --live --verbose -- | garnish"
+  },
+  "keywords": [
+    "glo",
+    "mesh",
+    "view",
+    "viewer",
+    "quick",
+    "demo"
+  ],
+  "browserify": {
+    "transform": [
+      "glslify"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/glo-js/glo-quick-mesh-view.git"
+  },
+  "homepage": "https://github.com/glo-js/glo-quick-mesh-view",
+  "bugs": {
+    "url": "https://github.com/glo-js/glo-quick-mesh-view/issues"
+  }
+}
