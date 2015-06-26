@@ -1,5 +1,5 @@
 {
-  "name": "glo-quick-mesh-view",
+  "name": "glo-demo-primitive",
   "version": "1.0.0",
   "description": "a quick mesh viewer using glo modules",
   "main": "index.js",
@@ -48,10 +48,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/glo-js/glo-quick-mesh-view.git"
+    "url": "git://github.com/glo-js/glo-demo-primitive.git"
   },
-  "homepage": "https://github.com/glo-js/glo-quick-mesh-view",
+  "homepage": "https://github.com/glo-js/glo-demo-primitive",
   "bugs": {
-    "url": "https://github.com/glo-js/glo-quick-mesh-view/issues"
+    "url": "https://github.com/glo-js/glo-demo-primitive/issues"
   }
 }
