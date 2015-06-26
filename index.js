@@ -16,9 +16,10 @@ module.exports = function meshViewer (primitive, opt) {
 
   var distance = defined(opt.distance, 4)
   var color = defined(opt.color, [ 1, 1, 1, 1 ])
-  var attribs = { antialias: true }
-  var gl = createContext('webgl', attribs)
-  var canvas = document.body.appendChild(gl.canvas)
+
+  var gl = createContext('webgl', { antialias: true })
+  var canvas = gl.canvas
+  document.body.appendChild(canvas)
     
   var wireframe = opt.wireframe
 
@@ -52,15 +53,7 @@ module.exports = function meshViewer (primitive, opt) {
 
   // create a default repeating texture
   if (useTexture) {
-    var img = [
-      [0xff, 0xff, 0xff, 0xff], [0xcc, 0xcc, 0xcc, 0xff],
-      [0xcc, 0xcc, 0xcc, 0xff], [0xff, 0xff, 0xff, 0xff]
-    ]
-    tex = createTexture(gl, img, [ 2, 2 ], {
-      wrap: gl.REPEAT,
-      minFilter: gl.NEAREST,
-      magFilter: gl.NEAREST
-    })
+    tex = createCheckerTexture(gl)
   }
 
   return app
@@ -76,7 +69,7 @@ module.exports = function meshViewer (primitive, opt) {
     gl.enable(gl.DEPTH_TEST)
     gl.disable(gl.CULL_FACE)
 
-    var angle = time * 0.5
+    var angle = time * 0.35
     camera.viewport = [0, 0, width, height]
     camera.identity()
     camera.translate([ Math.cos(angle) * distance, 0, Math.sin(angle) * distance ])
@@ -96,4 +89,16 @@ module.exports = function meshViewer (primitive, opt) {
     mesh.draw(wireframe ? gl.LINES : gl.TRIANGLES)
     mesh.unbind(shader)
   }
+}
+
+function createCheckerTexture (gl) {
+  var pixels = [
+    [0xff, 0xff, 0xff, 0xff], [0xcc, 0xcc, 0xcc, 0xff],
+    [0xcc, 0xcc, 0xcc, 0xff], [0xff, 0xff, 0xff, 0xff]
+  ]
+  return createTexture(gl, pixels, [ 2, 2 ], {
+    wrap: gl.REPEAT,
+    minFilter: gl.NEAREST,
+    magFilter: gl.NEAREST
+  })
 }
