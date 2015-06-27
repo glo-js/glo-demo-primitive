@@ -47,6 +47,7 @@ module.exports = function meshViewer (primitive, opt) {
     .elements(wireframe ? toWireframe(primitive.cells) : primitive.cells)
 
   var time = 0
+  var startAngle = opt.angle || 0
   var tex
   var app = createApp(canvas, { scale: window.devicePixelRatio })
     .on('tick', render)
@@ -71,7 +72,7 @@ module.exports = function meshViewer (primitive, opt) {
     gl.depthFunc(gl.LEQUAL)
     gl.enable(gl.CULL_FACE)
 
-    var angle = time * 0.35
+    var angle = startAngle + time * 0.35
     camera.viewport = [0, 0, width, height]
     camera.identity()
     camera.translate([ Math.cos(angle) * distance, 0, Math.sin(angle) * distance ])
