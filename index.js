@@ -22,9 +22,12 @@ module.exports = function meshViewer (primitive, opt) {
   document.body.appendChild(canvas)
 
   var wireframe = opt.wireframe
-
-  var useTexture = opt.texture !== false
+  var culling = opt.culling !== false
+  var useTexture = primitive.uvs && opt.texture !== false
   var shaderDefines = {}
+  if (opt.showNormals && primitive.normals) {
+    shaderDefines.USE_NORMALS = true
+  }
   if (useTexture) {
     shaderDefines.USE_TEXTURE = true
   }
@@ -42,9 +45,15 @@ module.exports = function meshViewer (primitive, opt) {
   var camera = createCamera()
   var mesh = createMesh(gl)
     .attribute('position', primitive.positions)
-    .attribute('uv', primitive.uvs)
-    .attribute('normal', primitive.normals)
     .elements(wireframe ? toWireframe(primitive.cells) : primitive.cells)
+
+  // optional attributes
+  if (primitive.uvs) {
+    mesh.attribute('uv', primitive.uvs)
+  }
+  if (primitive.normals) {
+    mesh.attribute('normal', primitive.normals)
+  }
 
   var time = 0
   var startAngle = opt.angle || 0
@@ -70,7 +79,13 @@ module.exports = function meshViewer (primitive, opt) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     gl.enable(gl.DEPTH_TEST)
     gl.depthFunc(gl.LEQUAL)
-    gl.enable(gl.CULL_FACE)
+    if (culling) {
+      gl.cullFace(gl.BACK)
+      gl.frontFace(gl.CCW)
+      gl.enable(gl.CULL_FACE)
+    } else {
+      gl.disable(gl.CULL_FACE)
+    }
 
     var angle = startAngle + time * 0.35
     camera.viewport = [0, 0, width, height]
