@@ -20,7 +20,7 @@ module.exports = function meshViewer (primitive, opt) {
   var gl = createContext('webgl', { antialias: true })
   var canvas = gl.canvas
   document.body.appendChild(canvas)
-    
+
   var wireframe = opt.wireframe
 
   var useTexture = opt.texture !== false
@@ -65,9 +65,11 @@ module.exports = function meshViewer (primitive, opt) {
     var height = gl.drawingBufferHeight
     gl.viewport(0, 0, width, height)
     gl.clearColor(0, 0, 0, 1)
+    gl.clearDepth(1)
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     gl.enable(gl.DEPTH_TEST)
-    gl.disable(gl.CULL_FACE)
+    gl.depthFunc(gl.LEQUAL)
+    gl.enable(gl.CULL_FACE)
 
     var angle = time * 0.35
     camera.viewport = [0, 0, width, height]

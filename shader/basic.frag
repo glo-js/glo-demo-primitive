@@ -1,3 +1,4 @@
+#version 100
 precision mediump float;
 varying vec2 vUv;
 varying vec3 vNormal;
