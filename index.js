@@ -17,7 +17,7 @@ module.exports = function meshViewer (primitive, opt) {
   var distance = defined(opt.distance, 4)
   var color = defined(opt.color, [ 1, 1, 1, 1 ])
 
-  var gl = createContext('webgl', { antialias: true })
+  var gl = opt.gl || createContext('webgl', { antialias: true })
   var canvas = gl.canvas
   document.body.appendChild(canvas)
 
@@ -36,13 +36,21 @@ module.exports = function meshViewer (primitive, opt) {
     vertex: material.vertex,
     fragment: injectDefines(material.fragment, shaderDefines),
     uniforms: [
-      { type: 'vec2', name: 'repeat', value: opt.repeat || [ 8, 8 ] },
-      { type: 'sampler2D', name: 'iChannel0', value: 0 }
+      { type: 'vec2', name: 'repeat' },
+      { type: 'sampler2D', name: 'iChannel0' }
     ]
   }))
 
+  // defaults
+  shader.bind()
+  shader.uniforms.repeat(opt.repeat || [1, 1])
+  shader.uniforms.iChannel0(0)
+
   var model = identity([])
-  var camera = createCamera()
+  var camera = createCamera({
+    near: opt.near,
+    far: opt.far
+  })
   var mesh = createMesh(gl)
     .attribute('position', primitive.positions)
     .elements(wireframe ? toWireframe(primitive.cells) : primitive.cells)
@@ -61,14 +69,22 @@ module.exports = function meshViewer (primitive, opt) {
   var app = createApp(canvas, { scale: window.devicePixelRatio })
     .on('tick', render)
 
+  app.render = render
+  app.gl = gl
+
   // create a default repeating texture
   if (useTexture) {
-    tex = createCheckerTexture(gl)
+    if (opt.texture && typeof opt.texture.bind === 'function') {
+      tex = opt.texture
+    } else {
+      tex = createCheckerTexture(gl)
+    }
   }
 
   return app
 
   function render (dt) {
+    dt = dt || 0
     time += dt / 1000
 
     var width = gl.drawingBufferWidth

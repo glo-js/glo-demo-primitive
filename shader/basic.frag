@@ -2,6 +2,7 @@
 precision mediump float;
 varying vec2 vUv;
 varying vec3 vNormal;
+
 uniform sampler2D iChannel0;
 uniform vec2 repeat;
 uniform vec4 color;
