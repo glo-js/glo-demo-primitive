@@ -16,7 +16,7 @@ module.exports = function meshViewer (primitive, opt) {
 
   var distance = defined(opt.distance, 4)
   var color = defined(opt.color, [ 1, 1, 1, 1 ])
-
+  
   var gl = opt.gl || createContext('webgl', { antialias: true })
   var canvas = gl.canvas
   document.body.appendChild(canvas)
@@ -45,7 +45,7 @@ module.exports = function meshViewer (primitive, opt) {
   shader.bind()
   shader.uniforms.repeat(opt.repeat || [1, 1])
   shader.uniforms.iChannel0(0)
-
+  
   var model = identity([])
   var camera = createCamera({
     near: opt.near,
