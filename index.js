@@ -10,6 +10,7 @@ var injectDefines = require('glsl-inject-defines')
 var defined = require('defined')
 var material = require('./shader')
 var toWireframe = require('gl-wireframe')
+var orbitControls = require('orbit-controls')
 
 module.exports = function meshViewer (primitive, opt) {
   opt = opt || {}
@@ -49,11 +50,20 @@ module.exports = function meshViewer (primitive, opt) {
   var model = identity([])
   var camera = createCamera({
     near: opt.near,
-    far: opt.far
+    far: opt.far,
+    position: [0, 0, 1]
   })
   var mesh = createMesh(gl)
     .attribute('position', primitive.positions)
     .elements(wireframe ? toWireframe(primitive.cells) : primitive.cells)
+
+  var controls = orbitControls({
+    element: canvas,
+    distanceBounds: [2, 100],
+    distance: 6,
+    rotationSpeed: 1,
+    pinchSpeed: 0.025
+  })
 
   // optional attributes
   if (primitive.uvs) {
@@ -105,9 +115,11 @@ module.exports = function meshViewer (primitive, opt) {
 
     var angle = startAngle + time * 0.35
     camera.viewport = [0, 0, width, height]
-    camera.identity()
-    camera.translate([ Math.cos(angle) * distance, 0, Math.sin(angle) * distance ])
-    camera.lookAt([ 0, 0, 0 ])
+    // camera.identity()
+    // camera.translate([ Math.cos(angle) * distance, 0, Math.sin(angle) * distance ])
+    // camera.lookAt([ 0, 0, 0 ])
+    
+    controls.update(camera.position, camera.direction, camera.up)
     camera.update()
 
     shader.bind()
