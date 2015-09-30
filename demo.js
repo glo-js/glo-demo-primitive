@@ -4,5 +4,6 @@ var mesh = require('torus-mesh')({
 })
 
 require('./')(mesh, {
+  distanceBounds: [ 1.5, 100 ],
   repeat: [ 8, 4 ]
 }).start()

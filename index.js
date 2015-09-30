@@ -15,12 +15,19 @@ var orbitControls = require('orbit-controls')
 module.exports = function meshViewer (primitive, opt) {
   opt = opt || {}
 
-  var distance = defined(opt.distance, 4)
   var color = defined(opt.color, [ 1, 1, 1, 1 ])
-  
+
   var gl = opt.gl || createContext('webgl', { antialias: true })
   var canvas = gl.canvas
   document.body.appendChild(canvas)
+  
+  canvas.oncontextmenu = function () {
+    return false
+  }
+  
+  canvas.addEventListener('touchstart', function (ev) {
+    ev.preventDefault()
+  })
 
   var wireframe = opt.wireframe
   var culling = opt.culling !== false
@@ -46,7 +53,7 @@ module.exports = function meshViewer (primitive, opt) {
   shader.bind()
   shader.uniforms.repeat(opt.repeat || [1, 1])
   shader.uniforms.iChannel0(0)
-  
+
   var model = identity([])
   var camera = createCamera({
     near: opt.near,
@@ -57,13 +64,14 @@ module.exports = function meshViewer (primitive, opt) {
     .attribute('position', primitive.positions)
     .elements(wireframe ? toWireframe(primitive.cells) : primitive.cells)
 
-  var controls = orbitControls({
-    element: canvas,
-    distanceBounds: [2, 100],
-    distance: 6,
+  var controls = orbitControls(assign({
+    distanceBounds: [0, 100],
+    distance: 4,
     rotationSpeed: 1,
     pinchSpeed: 0.025
-  })
+  }, opt, {
+    element: canvas
+  }))
 
   // optional attributes
   if (primitive.uvs) {
@@ -74,7 +82,6 @@ module.exports = function meshViewer (primitive, opt) {
   }
 
   var time = 0
-  var startAngle = opt.angle || 0
   var tex
   var app = createApp(canvas, { scale: window.devicePixelRatio })
     .on('tick', render)
@@ -113,12 +120,8 @@ module.exports = function meshViewer (primitive, opt) {
       gl.disable(gl.CULL_FACE)
     }
 
-    var angle = startAngle + time * 0.35
     camera.viewport = [0, 0, width, height]
-    // camera.identity()
-    // camera.translate([ Math.cos(angle) * distance, 0, Math.sin(angle) * distance ])
-    // camera.lookAt([ 0, 0, 0 ])
-    
+
     controls.update(camera.position, camera.direction, camera.up)
     camera.update()
 
