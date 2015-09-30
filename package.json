@@ -1,6 +1,6 @@
 {
   "name": "glo-demo-primitive",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "a quick mesh viewer using glo modules",
   "main": "index.js",
   "license": "MIT",
